@@ -1,0 +1,162 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Fee Payment Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f3f6fa;
+            padding: 30px;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+        }
+
+        h1, h2 {
+            color: #153d35;
+        }
+
+        input, select, button {
+            padding: 12px;
+            margin: 8px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        button {
+            background: #153d35;
+            color: white;
+            cursor: pointer;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 25px;
+        }
+
+        th, td {
+            padding: 14px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background: #153d35;
+            color: white;
+        }
+
+        a {
+            color: #153d35;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Fee Payment Management</h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+            <p>{{ message }}</p>
+        {% endfor %}
+    {% endwith %}
+
+    <h2>Record New Payment</h2>
+
+    <form method="POST" action="{{ url_for('payments') }}">
+
+        <select name="student_id" required>
+            <option value="">Select Student</option>
+
+            {% for student in students %}
+                <option value="{{ student.id }}">
+                    {{ student.name }} - Fee: ₹{{ student.total_fee }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <input
+            type="number"
+            name="amount"
+            placeholder="Payment Amount"
+            min="0.01"
+            step="0.01"
+            required
+        >
+
+        <button type="submit">Record Payment</button>
+
+    </form>
+
+<!-- STUDENT FEE SUMMARY -->
+
+<h2>Student Fee Summary</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>Student Name</th>
+            <th>Total Fee</th>
+            <th>Paid Amount</th>
+            <th>Remaining Balance</th>
+            <th>Payment Status</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for student in students %}
+        <tr>
+            <td>{{ student.name }}</td>
+            <td>₹{{ "%.2f"|format(fee_summaries[student.id].total_fee) }}</td>
+            <td>₹{{ "%.2f"|format(fee_summaries[student.id].paid_amount) }}</td>
+            <td>₹{{ "%.2f"|format(fee_summaries[student.id].balance) }}</td>
+            <td>{{ fee_summaries[student.id].status }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+    <h2>Payment History</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Payment ID</th>
+                <th>Student ID</th>
+                <th>Amount Paid</th>
+                <th>Payment Date</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for payment in payment_records %}
+            <tr>
+                <td>{{ payment.id }}</td>
+                <td>{{ payment.student_id }}</td>
+                <td>₹{{ payment.amount }}</td>
+                <td>{{ payment.payment_date.strftime('%d-%m-%Y') }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="4">No payment records available.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <br>
+
+    <a href="{{ url_for('students') }}">Back to Student Management</a>
+
+</div>
+
+</body>
+</html>

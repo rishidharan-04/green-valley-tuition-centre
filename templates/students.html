@@ -1,0 +1,141 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Management</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #f4f7fb;
+            padding: 30px;
+        }
+
+        .container {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+        }
+
+        input {
+            padding: 12px;
+            margin: 8px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+        }
+
+        button {
+            padding: 12px 20px;
+            background: #173b35;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 25px;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 13px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background: #173b35;
+            color: white;
+        }
+
+        a {
+            color: #173b35;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Student Management</h1>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endwith %}
+
+
+    <h3>Add New Student</h3>
+
+    <form action="/add_student" method="POST">
+
+        <input type="text" name="name"
+               placeholder="Student Name" required>
+
+        <input type="email" name="email"
+               placeholder="Email" required>
+
+        <input type="tel" name="phone"
+       placeholder="Phone Number"
+       minlength="10"
+       maxlength="10"
+       pattern="[0-9]{10}"
+       required>
+
+        <input type="number" name="total_fee"
+               placeholder="Total Fee" step="0.01" min="0" required>
+
+        <input type="number" name="batch_id"
+               placeholder="Batch ID" min="1" required>
+
+        <button type="submit">Add Student</button>
+
+    </form>
+
+    <h3>Student Records</h3>
+
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Total Fee</th>
+            <th>Batch ID</th>
+            <th>Action</th>
+        </tr>
+
+        {% for student in students %}
+        <tr>
+            <td>{{ student.id }}</td>
+            <td>{{ student.name }}</td>
+            <td>{{ student.email }}</td>
+            <td>{{ student.phone }}</td>
+            <td>₹{{ student.total_fee }}</td>
+            <td>{{ student.batch_id }}</td>
+            <td>
+    <a href="/edit_student/{{ student.id }}">Edit</a>
+
+    <form action="/delete_student/{{ student.id }}" method="POST"
+          style="display:inline;"
+          onsubmit="return confirm('Are you sure you want to delete this student?');">
+        <button type="submit">Delete</button>
+    </form>
+</td>
+        </tr>
+        {% endfor %}
+
+    </table>
+
+    <br>
+    <a href="/">Back to Dashboard</a>
+
+</div>
+
+</body>
+</html>

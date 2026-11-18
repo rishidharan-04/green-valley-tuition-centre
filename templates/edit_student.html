@@ -1,0 +1,43 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Student</title>
+</head>
+<body>
+
+    <h1>Edit Student Details</h1>
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <p class="{{ category }}">{{ message }}</p>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+    <form method="POST">
+
+        <input type="text" name="name"
+               value="{{ student.name }}" required>
+
+        <input type="email" name="email"
+               value="{{ student.email }}" required>
+
+        <input type="text" name="phone"
+               value="{{ student.phone }}" required>
+
+        <input type="number" name="total_fee"
+               value="{{ student.total_fee }}" required>
+
+        <input type="number" name="batch_id"
+               value="{{ student.batch_id }}" required>
+
+        <button type="submit">Update Student</button>
+
+    </form>
+
+    <a href="{{ url_for('students') }}">Back to Students</a>
+
+</body>
+</html>
